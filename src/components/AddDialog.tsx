@@ -7,7 +7,7 @@ import { ProjectForm } from './ProjectForm';
 import { Modal } from './ui';
 
 export function AddDialog({ onClose, onAdded }: { onClose: () => void; onAdded: (id: string) => void }) {
-  const [path, setPath] = useState('~/Downloads/');
+  const [path, setPath] = useState('~/Documents/My Projects/');
   const [found, setFound] = useState<Detected | null>(null);
   const [candidates, setCandidates] = useState<Array<{ path: string; name: string }>>([]);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +44,7 @@ export function AddDialog({ onClose, onAdded }: { onClose: () => void; onAdded: 
           >
             <label className="label" htmlFor="add-path">Project folder</label>
             <div className="flex gap-2">
-              <input id="add-path" autoFocus className="field font-mono text-xs" value={path} onChange={(e) => setPath(e.target.value)} placeholder="~/Downloads/my-app" />
+              <input id="add-path" autoFocus className="field font-mono text-xs" value={path} onChange={(e) => setPath(e.target.value)} placeholder="~/Documents/My Projects/my-app" />
               <button className="btn btn-primary shrink-0" disabled={busy || !path.trim()}>
                 <Sparkles size={15} /> {busy ? 'Reading…' : 'Detect'}
               </button>

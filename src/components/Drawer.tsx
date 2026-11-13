@@ -107,6 +107,12 @@ export function Drawer({
   );
 }
 
+/** Quote a path for the shell while keeping a leading ~ expandable (folders may contain spaces). */
+function shellPath(p: string): string {
+  const quote = (x: string) => (/^[\w./@%+=:,-]*$/.test(x) ? x : `"${x.replace(/(["\\$`])/g, '\\$1')}"`);
+  return p.startsWith('~/') ? `~/${quote(p.slice(2))}` : quote(p);
+}
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-6">
@@ -176,7 +182,7 @@ function RunTab({ p }: { p: ProjectView }) {
         <ol className="space-y-3 text-sm">
           <li>
             <p className="mb-1.5 font-medium">1. Go to the folder</p>
-            <CodeLine text={`cd ${p.path}`} />
+            <CodeLine text={`cd ${shellPath(p.path)}`} />
           </li>
           {p.installCommand && (
             <li>
