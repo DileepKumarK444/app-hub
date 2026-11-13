@@ -1,0 +1,11 @@
+node_modules
+.next
+next-env.d.ts
+tsconfig.tsbuildinfo
+.env*
+# local runtime state (machine-specific)
+data/projects.json
+data/runtime.json
+data/logs/
+.DS_Store
+.dev.log

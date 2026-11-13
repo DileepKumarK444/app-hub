@@ -1,0 +1,72 @@
+[
+  {
+    "id": "typemaster",
+    "name": "TypeMaster",
+    "description": "Typing practice app with accounts, lessons and progress tracking.",
+    "path": "~/Downloads/typemaster",
+    "stack": ["Next.js", "TypeScript", "Tailwind", "Postgres", "Drizzle"],
+    "tags": ["web", "database"],
+    "port": 3010,
+    "command": "npm run dev -w apps/web -- -p {port}",
+    "installCommand": "npm install && npm run setup:env",
+    "notes": "Needs Postgres on localhost:5432 with a typemaster_dev database. Migrate once with: DATABASE_URL=postgres://localhost:5432/typemaster_dev npm run migrate -w packages/db",
+    "url": null,
+    "enabled": true
+  },
+  {
+    "id": "localspace",
+    "name": "LocalSpace",
+    "description": "Private, local-first documentation platform. Nothing leaves your machine.",
+    "path": "~/Downloads/localspace",
+    "stack": ["React", "TipTap", "Express", "Prisma", "SQLite"],
+    "tags": ["web", "docs"],
+    "port": 4100,
+    "command": "PORT={port} npm start",
+    "installCommand": "npm install",
+    "notes": "Builds the web app, then serves everything from one port. Only one copy can use the database at a time.",
+    "url": null,
+    "enabled": true
+  },
+  {
+    "id": "theorydrive-ie",
+    "name": "TheoryDrive IE",
+    "description": "Prepare for the Irish RSA Category B driver theory test. Learn, practise, pass.",
+    "path": "~/Downloads/theorydrive-ie",
+    "stack": ["Next.js", "React", "Prisma", "SQLite", "Tailwind"],
+    "tags": ["web", "learning"],
+    "port": 3200,
+    "command": "npm run predev && npx next dev -p {port}",
+    "installCommand": "npm install",
+    "notes": "The predev step creates and seeds the SQLite database on every start.",
+    "url": null,
+    "enabled": true
+  },
+  {
+    "id": "xml-compare",
+    "name": "XML Compare",
+    "description": "Compare two XML files by raw source or by structure and content.",
+    "path": "~/Downloads/xml-compare",
+    "stack": ["React", "Vite", "Django", "Python"],
+    "tags": ["web", "tools"],
+    "port": 5173,
+    "command": "trap 'kill 0' EXIT INT TERM; (cd backend && .venv/bin/python manage.py runserver 8000) & (cd frontend && npm run dev -- --port {port}) & wait",
+    "installCommand": "cd backend && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && cd ../frontend && npm install",
+    "notes": "Starts two processes: the Django API on port 8000 (fixed) and the Vite UI on the port above (keep 5173 so the API allows it).",
+    "url": null,
+    "enabled": true
+  },
+  {
+    "id": "cleanyourtv",
+    "name": "CleanYourTV",
+    "description": "Strip bloatware from an Android or Google TV over Wi-Fi and install a clean launcher.",
+    "path": "~/Downloads/cleanyourtv",
+    "stack": ["Android TV", "ADB", "Shell"],
+    "tags": ["tool"],
+    "port": null,
+    "command": null,
+    "installCommand": null,
+    "notes": "Not a web app. It talks to your TV, so there is nothing to run here. Open the README for the steps.",
+    "url": null,
+    "enabled": true
+  }
+]
