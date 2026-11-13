@@ -6,6 +6,7 @@ import type { ProjectView } from '@/lib/types';
 import { AddDialog } from './AddDialog';
 import { Drawer, type TabId } from './Drawer';
 import { DisabledRow, Tile, type Actions } from './Tile';
+import { ThemeToggle } from './ThemeToggle';
 import { Modal } from './ui';
 
 type Filter = 'all' | 'running' | 'stopped';
@@ -119,6 +120,7 @@ export function Dashboard() {
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
+          <ThemeToggle />
           <button className="btn btn-primary shrink-0" onClick={() => setAdding(true)}>
             <Plus size={16} /> Add app
           </button>

@@ -15,8 +15,8 @@
   --bad: 220 38 38;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+@media all {
+  :root[data-theme='dark'] {
     --bg: 10 12 16;
     --surface: 20 23 29;
     --subtle: 29 33 41;
@@ -27,10 +27,11 @@
     --ok: 74 222 128;
     --warn: 251 191 36;
     --bad: 248 113 113;
+    color-scheme: dark;
   }
 }
 
-html { color-scheme: light dark; }
+html { color-scheme: light; }
 body {
   background: rgb(var(--bg));
   color: rgb(var(--ink));
