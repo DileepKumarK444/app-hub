@@ -49,9 +49,9 @@
     "stack": ["React", "Vite", "Django", "Python"],
     "tags": ["web", "tools"],
     "port": 5173,
-    "command": "trap 'kill 0' EXIT INT TERM; (cd backend && .venv/bin/python manage.py runserver 8000) & (cd frontend && npm run dev -- --port {port}) & wait",
-    "installCommand": "cd backend && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && cd ../frontend && npm install",
-    "notes": "Starts two processes: the Django API on port 8000 (fixed) and the Vite UI on the port above (keep 5173 so the API allows it).",
+    "command": "node run.mjs --port {port}",
+    "installCommand": "node run.mjs --setup",
+    "notes": "Runs run.mjs, which sets up the Python venv and node_modules for this OS (Windows, macOS, Linux, WSL), then starts the Django API on 8010 and the Vite UI on the port above.",
     "url": null,
     "enabled": true
   },
