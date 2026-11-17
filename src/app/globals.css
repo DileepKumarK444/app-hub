@@ -55,6 +55,44 @@ body {
   .label { @apply mb-1 block text-xs font-medium text-muted; }
 }
 
+/* Pastel tiles: each app gets a hue; text, chips and icon colours are derived from it. */
+.tile {
+  --tb: hsl(var(--h) 92% 95%);
+  --ti: hsl(var(--h) 60% 20%);
+  --tm: hsl(var(--h) 28% 38%);
+  --ts: hsl(var(--h) 78% 52%);
+  background: var(--tb);
+  color: var(--ti);
+  border: 1px solid hsl(var(--h) 60% 88%);
+}
+:root[data-theme='dark'] .tile {
+  --tb: hsl(var(--h) 32% 16%);
+  --ti: hsl(var(--h) 80% 92%);
+  --tm: hsl(var(--h) 25% 72%);
+  --ts: hsl(var(--h) 70% 60%);
+  border-color: hsl(var(--h) 30% 24%);
+}
+.tile-muted { color: var(--tm); }
+.tile-chip { background: hsl(var(--h) 80% 50% / 0.12); color: var(--tm); }
+.tile-badge { background: var(--ts); color: #fff; }
+:root[data-theme='dark'] .tile-badge { color: hsl(var(--h) 40% 10%); }
+.ibtn {
+  display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 9999px;
+  background: hsl(0 0% 100% / 0.65); color: var(--ti); transition: transform .12s, background .12s;
+}
+:root[data-theme='dark'] .ibtn { background: hsl(0 0% 100% / 0.08); }
+.ibtn:hover:not(:disabled) { background: hsl(0 0% 100% / 0.95); transform: scale(1.06); }
+:root[data-theme='dark'] .ibtn:hover:not(:disabled) { background: hsl(0 0% 100% / 0.16); }
+.ibtn-solid { background: var(--ts); color: #fff; }
+:root[data-theme='dark'] .ibtn-solid { color: hsl(var(--h) 40% 10%); }
+.ibtn-solid:hover:not(:disabled) { background: var(--ts); filter: brightness(1.08); }
+:root[data-theme='dark'] .ibtn-solid:hover:not(:disabled) { background: var(--ts); }
+.ibtn:disabled { opacity: .4; cursor: not-allowed; }
+.ibtn:focus-visible { outline: 2px solid var(--ts); outline-offset: 2px; }
+.tile[draggable='true'] { cursor: grab; }
+.tile-dragging { opacity: .4; }
+.tile-over { outline: 2px dashed var(--ts); outline-offset: 2px; }
+
 @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgb(var(--ok) / 0.5); } 100% { box-shadow: 0 0 0 7px rgb(var(--ok) / 0); } }
 .pulse { animation: pulse-ring 1.8s ease-out infinite; }
 @keyframes slide-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }

@@ -5,7 +5,7 @@ import { call } from '@/lib/client';
 import type { ProjectView } from '@/lib/types';
 import { AddDialog } from './AddDialog';
 import { Drawer, type TabId } from './Drawer';
-import { DisabledRow, Tile, type Actions } from './Tile';
+import { DisabledRow, Tile, hueFor, type Actions } from './Tile';
 import { ThemeToggle } from './ThemeToggle';
 import { Modal } from './ui';
 
@@ -18,10 +18,15 @@ export function Dashboard() {
   const [filter, setFilter] = useState<Filter>('all');
   const [selected, setSelected] = useState<string | null>(null);
   const [tab, setTab] = useState<TabId>('overview');
+  const [menuId, setMenuId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [removing, setRemoving] = useState<ProjectView | null>(null);
   const [showDisabled, setShowDisabled] = useState(true);
   const [busy, setBusy] = useState<Set<string>>(new Set());
+  const [order, setOrder] = useState<string[]>([]);
+  const [hues, setHues] = useState<Record<string, number>>({});
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ text: string; bad: boolean } | null>(null);
 
   const refresh = useCallback(async () => {
@@ -39,6 +44,36 @@ export function Dashboard() {
     const t = setInterval(() => document.visibilityState === 'visible' && void refresh(), 3000);
     return () => clearInterval(t);
   }, [refresh]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('apphub.order');
+      if (raw) setOrder(JSON.parse(raw));
+      const c = localStorage.getItem('apphub.hues');
+      if (c) setHues(JSON.parse(c));
+    } catch {
+      /* ignore bad or blocked storage */
+    }
+  }, []);
+
+  const setHue = (id: string, h: number) => {
+    const next = { ...hues, [id]: h };
+    setHues(next);
+    try {
+      localStorage.setItem('apphub.hues', JSON.stringify(next));
+    } catch {
+      /* storage blocked */
+    }
+  };
+
+  const saveOrder = useCallback((ids: string[]) => {
+    setOrder(ids);
+    try {
+      localStorage.setItem('apphub.order', JSON.stringify(ids));
+    } catch {
+      /* storage blocked: order lasts for this session only */
+    }
+  }, []);
 
   useEffect(() => {
     if (!toast) return;
@@ -81,7 +116,27 @@ export function Dashboard() {
     [withBusy],
   );
 
-  const active = (projects ?? []).filter((p) => p.enabled);
+  const active = useMemo(() => {
+    const rank = (id: string) => {
+      const i = order.indexOf(id);
+      return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+    };
+    return (projects ?? []).filter((p) => p.enabled).sort((a, b) => rank(a.id) - rank(b.id));
+  }, [projects, order]);
+
+  const move = (id: string, targetId: string) => {
+    if (id === targetId) return;
+    const ids = active.map((p) => p.id);
+    const to = ids.indexOf(targetId);
+    ids.splice(ids.indexOf(id), 1);
+    ids.splice(to, 0, id);
+    saveOrder(ids);
+  };
+  const nudge = (id: string, dir: -1 | 1) => {
+    const ids = visible.map((p) => p.id);
+    const t = ids[ids.indexOf(id) + dir];
+    if (t) move(id, t);
+  };
   const disabled = (projects ?? []).filter((p) => !p.enabled);
   const runningCount = active.filter((p) => p.status === 'running' || p.status === 'starting').length;
 
@@ -151,15 +206,37 @@ export function Dashboard() {
       )}
 
       {projects === null && !error ? (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-52 animate-pulse rounded-xl2 border border-line bg-surface" />
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="h-28 animate-pulse rounded-2xl border border-line bg-surface" />
           ))}
         </div>
       ) : visible.length > 0 ? (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {visible.map((p) => (
-            <Tile key={p.id} p={p} busy={busy.has(p.id)} a={actions} />
+            <Tile
+              key={p.id}
+              p={p}
+              busy={busy.has(p.id)}
+              menuOpen={menuId === p.id}
+              setMenuOpen={(open) => setMenuId((cur) => (open ? p.id : cur === p.id ? null : cur))}
+              a={actions}
+              hue={hues[p.id] ?? hueFor(p.id)}
+              onHue={(h) => setHue(p.id, h)}
+              drag={{
+                dragging: dragId === p.id,
+                over: !!dragId && overId === p.id && dragId !== p.id,
+                onDragStart: () => setDragId(p.id),
+                onDragEnter: () => setOverId(p.id),
+                onDragEnd: () => (setDragId(null), setOverId(null)),
+                onDrop: () => {
+                  if (dragId) move(dragId, p.id);
+                  setDragId(null);
+                  setOverId(null);
+                },
+                onNudge: (d) => nudge(p.id, d),
+              }}
+            />
           ))}
         </div>
       ) : (
