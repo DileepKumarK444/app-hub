@@ -1,5 +1,5 @@
 'use client';
-import { FolderSearch, Sparkles } from 'lucide-react';
+import { FolderOpen, FolderSearch, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { call } from '@/lib/client';
 import type { Detected } from '@/lib/types';
@@ -31,6 +31,22 @@ export function AddDialog({ onClose, onAdded }: { onClose: () => void; onAdded: 
     }
   }
 
+  async function browse() {
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await call<{ path: string | null }>('/api/pick-folder', 'POST');
+      if (r.path) {
+        setPath(r.path);
+        await detect(r.path);
+        return;
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not open the folder picker.');
+    }
+    setBusy(false);
+  }
+
   return (
     <Modal title={found ? 'Add app' : 'Add an app'} onClose={onClose} wide>
       {!found ? (
@@ -45,6 +61,9 @@ export function AddDialog({ onClose, onAdded }: { onClose: () => void; onAdded: 
             <label className="label" htmlFor="add-path">Project folder</label>
             <div className="flex gap-2">
               <input id="add-path" autoFocus className="field font-mono text-xs" value={path} onChange={(e) => setPath(e.target.value)} placeholder="~/Developer/my-app" />
+              <button type="button" className="btn shrink-0" disabled={busy} onClick={() => void browse()}>
+                <FolderOpen size={15} /> Browse…
+              </button>
               <button className="btn btn-primary shrink-0" disabled={busy || !path.trim()}>
                 <Sparkles size={15} /> {busy ? 'Reading…' : 'Detect'}
               </button>
