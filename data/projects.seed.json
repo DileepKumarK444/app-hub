@@ -82,5 +82,19 @@
     "notes": "Binds to 127.0.0.1 only. Data lives in ~/Library/Application Support/DiffLens. Under construction: Phase 1 of 7 is done (dashboard and database); reviews arrive in later phases.",
     "url": null,
     "enabled": true
+  },
+  {
+    "id": "git-repository-explorer",
+    "name": "Git Repository Explorer",
+    "description": "Local, read-only-by-default visual Git explorer: history graph, diffs, blame, branches, staging, search and stashes.",
+    "path": "~/Developer/git-repository-explorer",
+    "stack": ["React", "TypeScript", "Vite", "FastAPI", "Python", "Monaco"],
+    "tags": ["web", "tool"],
+    "port": 4600,
+    "command": "PORT={port} bash ./dev.sh",
+    "installCommand": "python3 -m venv backend/.venv && backend/.venv/bin/pip install -r backend/requirements.txt && cd frontend && npm install && npm run build",
+    "notes": "Needs Git, Python 3.10+ and Node 20+. Serves the built frontend and API on one port, bound to 127.0.0.1. Rebuild the frontend (cd frontend && npm run build) after UI changes. Repo: github.com/DileepKumarK444/git-repository-explorer (private).",
+    "url": null,
+    "enabled": true
   }
 ]

@@ -70,6 +70,15 @@ export function detect(rawPath: string, usedPorts: number[]): Detected {
   }
   if (!pkg && fs.existsSync(path.join(dir, 'requirements.txt'))) stack.add('Python');
 
+  // Split projects (backend/ + frontend/) usually ship one launcher script at the root.
+  // `bash` rather than ./ so it also works where the exec bit is lost (WSL on /mnt/c, zip downloads).
+  if (!command) {
+    const launcher = ['dev.sh', 'start.sh', 'run.sh'].find((f) => fs.existsSync(path.join(dir, f)));
+    if (launcher) command = `PORT={port} bash ./${launcher}`;
+  }
+  if (fs.existsSync(path.join(dir, 'frontend/package.json'))) stack.add('Node');
+  if (fs.existsSync(path.join(dir, 'backend/requirements.txt'))) stack.add('Python');
+
   const base = path.basename(dir);
   const name = titleCase(typeof pkg?.name === 'string' ? pkg.name.replace(/^@[^/]+\//, '') : base);
   const description = (typeof pkg?.description === 'string' && pkg.description) || firstParagraph(text);
