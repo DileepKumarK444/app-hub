@@ -96,5 +96,19 @@
     "notes": "Needs Git, Python 3.10+ and Node 20+. Serves the built frontend and API on one port, bound to 127.0.0.1. Rebuild the frontend (cd frontend && npm run build) after UI changes. Repo: github.com/DileepKumarK444/git-repository-explorer (private).",
     "url": null,
     "enabled": true
+  },
+  {
+    "id": "my-music",
+    "name": "My Music – Singing Practice",
+    "description": "Naiomika's singing practice app: play songs and lyrics, sing along with a notes and words score, and extract lyrics with AI.",
+    "path": "~/Developer/my-music",
+    "stack": ["React", "Vite", "Node", "IndexedDB"],
+    "tags": ["web", "music", "learning"],
+    "port": 4800,
+    "command": "npm run dev -- --port {port} --strictPort",
+    "installCommand": "npm install",
+    "notes": "Songs and scores are stored in the browser (IndexedDB), so always open the same address. Extract Lyrics and the words score need OPENAI_API_KEY in .env (copy .env.example). The microphone works on localhost only.",
+    "url": null,
+    "enabled": true
   }
 ]
